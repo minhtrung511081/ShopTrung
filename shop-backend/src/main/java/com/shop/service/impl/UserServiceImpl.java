@@ -5,6 +5,7 @@ import com.shop.dto.request.RegisterRequest;
 import com.shop.dto.response.AuthResponse;
 import com.shop.entity.User;
 import com.shop.repository.UserRepository;
+import com.shop.security.JwtService;
 import com.shop.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,6 +19,27 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+
+    private final JwtService jwtService;
+
+    @Override
+    public AuthResponse login(LoginRequest request) {
+
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Email không tồn tại"));
+
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Sai mật khẩu");
+        }
+
+        String token = jwtService.generateToken(user.getEmail());
+
+        return AuthResponse.builder()
+                .token(token)
+                .fullName(user.getFullName())
+                .role(user.getRole())
+                .build();
+    }
 
     @Override
     public String register(RegisterRequest request) {
@@ -41,13 +63,6 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         return "Đăng ký thành công";
-    }
-
-    @Override
-    public AuthResponse login(LoginRequest request) {
-
-        throw new UnsupportedOperationException("Chưa triển khai Login");
-
     }
 
 }
