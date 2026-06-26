@@ -1,4 +1,4 @@
-package com.shop.shop_backend.dto.request;
+package com.shop.dto.request;
 
 import jakarta.validation.constraints.*;
 import lombok.Data;

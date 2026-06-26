@@ -1,4 +1,4 @@
-package com.shop.shop_backend.entity;
+package com.shop.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

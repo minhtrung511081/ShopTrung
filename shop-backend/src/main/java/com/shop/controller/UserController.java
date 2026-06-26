@@ -1,7 +1,7 @@
-package com.shop.shop_backend.controller;
+package com.shop.controller;
 
-import com.shop.shop_backend.entity.User;
-import com.shop.shop_backend.repository.UserRepository;
+import com.shop.entity.User;
+import com.shop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

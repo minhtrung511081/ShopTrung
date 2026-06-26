@@ -1,4 +1,4 @@
-package com.shop.shop_backend.dto.response;
+package com.shop.dto.response;
 
 import lombok.Builder;
 import lombok.Data;

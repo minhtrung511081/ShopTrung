@@ -1,6 +1,6 @@
-package com.shop.shop_backend.repository;
+package com.shop.repository;
 
-import com.shop.shop_backend.entity.Product;
+import com.shop.entity.Product;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
