@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
 
-    final String securitySchemeName = "bearerAuth";
+    String scheme = "bearerAuth";
 
 
     @Bean
@@ -30,19 +30,17 @@ public class SwaggerConfig {
                                 .email("trung@gmail.com"))
                         .license(new License()
                                 .name("Apache 2.0")))
-                // Thêm Security
-                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
-                .components(new Components()
-                        .addSecuritySchemes(securitySchemeName,
-                                new SecurityScheme()
-                                        .type(SecurityScheme.Type.HTTP)
-                                        .scheme("bearer")
-                                        .bearerFormat("JWT")
-                        )
-                )
+                // 🔥 QUAN TRỌNG: khai báo security operation-level override
+                .schemaRequirement(scheme, new SecurityScheme()
+                        .type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT"))
+
+                .addSecurityItem(new SecurityRequirement().addList(scheme))
                 .externalDocs(new ExternalDocumentation()
                         .description("Shop Documentation"));
 
     }
+
 
 }
