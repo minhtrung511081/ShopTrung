@@ -4,5 +4,5 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb+srv://minhtrung511081_db_user:trung123@cluster0.jpxd8ef.mongodb.net/sample_mflix?retryWrites=true&w=majority&appName=Cluster0
+      uri: mongodb+srv://minhtrung511081_db_user:trung123@cluster0.jpxd8ef.mongodb.net/ShopTrung?retryWrites=true&w=majority&appName=Cluster0
 
