@@ -27,4 +27,7 @@ public class ProductRequest {
 
     @NotBlank
     private String categoryId;
+
+    private Boolean status;
+
 }

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -24,4 +25,8 @@ public class ProductResponse {
     private String categoryId;
 
     private Boolean status;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
 }

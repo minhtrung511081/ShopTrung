@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +33,71 @@ public class ProductServiceImpl implements ProductService {
                 .updatedAt(LocalDateTime.now())
                 .build();
 
-        product = productRepository.save(product);
+        return toResponse(productRepository.save(product));
+    }
+
+    @Override
+    public List<ProductResponse> getAll() {
+
+        return productRepository.findAll()
+                .stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public ProductResponse getById(String id) {
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
+
+        return toResponse(product);
+    }
+
+    @Override
+    public ProductResponse update(String id, ProductRequest request) {
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm"));
+
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
+        product.setPrice(request.getPrice());
+        product.setQuantity(request.getQuantity());
+        product.setImage(request.getImage());
+        product.setCategoryId(request.getCategoryId());
+        product.setStatus(request.getStatus());
+        product.setUpdatedAt(LocalDateTime.now());
+
+        return toResponse(productRepository.save(product));
+    }
+
+    @Override
+    public void delete(String id) {
+
+        productRepository.deleteById(id);
+
+    }
+
+    @Override
+    public List<ProductResponse> search(String keyword) {
+
+        return productRepository.findByNameContainingIgnoreCase(keyword)
+                .stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductResponse> findByCategory(String categoryId) {
+
+        return productRepository.findByCategoryId(categoryId)
+                .stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    private ProductResponse toResponse(Product product) {
 
         return ProductResponse.builder()
                 .id(product.getId())
@@ -43,48 +108,10 @@ public class ProductServiceImpl implements ProductService {
                 .image(product.getImage())
                 .categoryId(product.getCategoryId())
                 .status(product.getStatus())
+                .createdAt(product.getCreatedAt())
+                .updatedAt(product.getUpdatedAt())
                 .build();
+
     }
 
-    @Override
-    public List<ProductResponse> getAll() {
-        return productRepository.findAll()
-                .stream()
-                .map(product -> ProductResponse.builder()
-                        .id(product.getId())
-                        .name(product.getName())
-                        .description(product.getDescription())
-                        .price(product.getPrice())
-                        .quantity(product.getQuantity())
-                        .image(product.getImage())
-                        .categoryId(product.getCategoryId())
-                        .status(product.getStatus())
-                        .build())
-                .toList();
-    }
-
-    @Override
-    public ProductResponse getById(String id) {
-        throw new UnsupportedOperationException("Chưa triển khai");
-    }
-
-    @Override
-    public ProductResponse update(String id, ProductRequest request) {
-        throw new UnsupportedOperationException("Chưa triển khai");
-    }
-
-    @Override
-    public void delete(String id) {
-        throw new UnsupportedOperationException("Chưa triển khai");
-    }
-
-    @Override
-    public List<ProductResponse> search(String keyword) {
-        throw new UnsupportedOperationException("Chưa triển khai");
-    }
-
-    @Override
-    public List<ProductResponse> findByCategory(String categoryId) {
-        throw new UnsupportedOperationException("Chưa triển khai");
-    }
 }
