@@ -19,24 +19,54 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
-
     private final JwtService jwtService;
 
     @Override
     public AuthResponse login(LoginRequest request) {
 
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Email không tồn tại"));
+        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
 
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Sai mật khẩu");
+        // Email không tồn tại
+        if (user == null) {
+            return AuthResponse.builder()
+                    .success(false)
+                    .message("Email không tồn tại")
+                    .build();
+        }
+
+        // Tài khoản bị khóa
+        if (!Boolean.TRUE.equals(user.getEnabled())) {
+            return AuthResponse.builder()
+                    .success(false)
+                    .message("Tài khoản đã bị khóa")
+                    .build();
+        }
+
+        System.out.println("Request password: " + request.getPassword());
+        System.out.println("DB password: " + user.getPassword());
+
+        boolean result = passwordEncoder.matches(
+                request.getPassword(),
+                user.getPassword()
+        );
+
+        System.out.println("Match: " + result);
+
+        if (!result) {
+            return AuthResponse.builder()
+                    .success(false)
+                    .message("Sai mật khẩu")
+                    .build();
         }
 
         String token = jwtService.generateToken(user.getEmail());
 
         return AuthResponse.builder()
+                .success(true)
+                .message("Đăng nhập thành công")
                 .token(token)
                 .fullName(user.getFullName())
+                .email(user.getEmail())
                 .role(user.getRole())
                 .build();
     }
@@ -64,5 +94,4 @@ public class UserServiceImpl implements UserService {
 
         return "Đăng ký thành công";
     }
-
 }
