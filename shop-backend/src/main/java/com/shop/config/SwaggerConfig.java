@@ -31,10 +31,20 @@ public class SwaggerConfig {
                         .license(new License()
                                 .name("Apache 2.0")))
                 // 🔥 QUAN TRỌNG: khai báo security operation-level override
-                .schemaRequirement(scheme, new SecurityScheme()
-                        .type(SecurityScheme.Type.HTTP)
-                        .scheme("bearer")
-                        .bearerFormat("JWT"))
+                .components(
+                        new Components()
+                                .addSecuritySchemes(
+                                        "Bearer Authentication",
+                                        new SecurityScheme()
+                                                .type(SecurityScheme.Type.HTTP)
+                                                .scheme("bearer")
+                                                .bearerFormat("JWT")
+                                )
+                )
+                .addSecurityItem(
+                        new SecurityRequirement()
+                                .addList("Bearer Authentication")
+                )
 
                 .addSecurityItem(new SecurityRequirement().addList(scheme))
                 .externalDocs(new ExternalDocumentation()
